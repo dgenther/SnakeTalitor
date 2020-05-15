@@ -1120,6 +1120,19 @@ void foodHitCheck(Snake *snake){
 	if (currentFood->col == snake->col && currentFood->row == snake->row){
 			printf("WE'VE HIT A FOOD!\n");
 			skipDeleteSegment = TRUE;
+			
+			Snake *snake = currentSnake;
+			
+			generateRandCoords(&x, &y);
+			while(snake != NULL){
+				if(snake->col == x && snake->row == y){
+					generateRandCoords(&x, &y);
+					*snake = *currentSnake;
+				} 
+				snake=snake->nextSeg;
+			}
+			
+			
 			generateRandCoords(&x, &y);
 			currentFood->col = x;
 			currentFood->row = y;
@@ -1315,7 +1328,7 @@ int main(int argc, char** argv){
 	currentSnake = createSnake(x, y, 'r');							//create Snake head
 	
 	createSegmentOf(&currentSnake);											//create first segment, or not, I'm not your mom.
-
+	
 	currentSnake->col++;	//start movement to the right so that we don't hit ourselves
 	
 	glutDisplayFunc(display);
