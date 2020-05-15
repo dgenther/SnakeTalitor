@@ -308,7 +308,7 @@ void resetGame(){
 		dir = 'l';
 	}
 	
-	printf("x = %d,      y = %d,    unitFieldSize = %d\n", x, y, unitFieldSize);
+	//printf("x = %d,      y = %d,    unitFieldSize = %d\n", x, y, unitFieldSize);
 	
 
 	
@@ -795,7 +795,7 @@ void drawSnake(Snake *snake){
 		}
 		
 		snake = snake->nextSeg;
-		printf("Length = %d\n", snakeLength(currentSnake));
+		//printf("Length = %d\n", snakeLength(currentSnake));
 		k++;
 	}
 	
@@ -941,7 +941,7 @@ void specialButtons(int key, int x, int y){
 void buttons(unsigned char key, int x, int y){
 	int i, j;
 	
-	printf("canChangeDirection = %s\n", canChangeDirection ? "TRUE" : "FALSE" );
+	//printf("canChangeDirection = %s\n", canChangeDirection ? "TRUE" : "FALSE" );
     switch(key){
         case 's':																//down
         	if (currentSnake->direction != 'u' && canChangeDirection){
@@ -1106,7 +1106,6 @@ void bodyHitCheck(Snake *snake){
 		
 		snake = snake->nextSeg;
 	}
-	printf("\n");
 }
 
 void wallHitCheck(Snake *snake){
@@ -1120,7 +1119,6 @@ void foodHitCheck(Snake *snake){
 	int x, y;
 	if (currentFood->col == snake->col && currentFood->row == snake->row){
 			printf("WE'VE HIT A FOOD!\n");
-			disableBodyCheck = TRUE;
 			skipDeleteSegment = TRUE;
 			generateRandCoords(&x, &y);
 			currentFood->col = x;
@@ -1134,11 +1132,6 @@ void drawText(unsigned char* string, float x, float y, float scale){
 	float snakeUnit = 100 * 1/6;
 	float xOffset = GAME_FIELD_X + GAME_FIELD_SIZE + snakeUnit*3;
 	float yOffset = GAME_FIELD_Y + snakeUnit*3;
-	
-	
-	printf("snakeUnit = %f\n", snakeUnit);
-	printf("xOffset = %f\n", xOffset);
-	printf("yOffset = %f\n", yOffset);
 	
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_BLEND);
