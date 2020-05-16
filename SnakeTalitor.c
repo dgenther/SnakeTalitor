@@ -35,11 +35,11 @@
 #define UNIT_SIZE ((WINDOW_X/16)/(DIFFICULTY))
 #define UNIT_FIELD_SIZE (GAME_FIELD_SIZE/UNIT_SIZE)
 
-int diff = 1;												//Difficulty  
+int diff = 2;												//Difficulty  
 int diffOffset;												//Pretty much just determines the number of squares in the field
 															//[1 to 100]  lol, anything above 20 is pretty much impossible, but looks cool
 															
-float gameSpeed = 1;										//Speed is also scaled with difficulty
+float gameSpeed = 2;										//Speed is also scaled with difficulty
 
 int red,green,blue; 										//variables used to store color
 int unitSize; 												//size of each square in pixels
@@ -61,7 +61,7 @@ void reverse(char* str, int len) {
         i++; 
         j--; 
     } 
-} 
+}
   
 int intToStr(int x, char str[], int d) { 
     int i = 0; 
@@ -328,16 +328,20 @@ void resetGame(){
 Food *createFood(){		//create food item at random location
 	int x = 0;
 	int y = 0;
-	Snake *snake = currentSnake;
+	
+	Snake *snake = malloc(sizeof(Snake));
+	snake = currentSnake;
 	
 	generateRandCoords(&x, &y);
 	while(snake != NULL){
 		if(snake->col == x && snake->row == y){
 			generateRandCoords(&x, &y);
-			*snake = *currentSnake;
+			snake = currentSnake;
 		} 
 		snake=snake->nextSeg;
 	}
+	
+	free(snake);
 	
 	Food *new_food;
 
@@ -350,7 +354,7 @@ Food *createFood(){		//create food item at random location
 }
 
 int snakeLength(Snake *snake){
-	int count=0;
+	int count = 0;
 	Snake *current = snake;
 	while(current != NULL){
 		count++;
@@ -403,10 +407,9 @@ void drawSnake(Snake *snake){
 	changeColor(50,100,25);
 
 	//Snake head facing to the right, starting in the top left part of square for snake neck and working around clockwise
-	
+
 	////////////////////////////////////////THIS SWITCH DRAWS THE PART THAT CONNECTS THE HEAD TO THE BODY AROUND CORNERS
 	switch(snake->nextSeg->direction){
-
 		case 'u':
 			glBegin(GL_QUADS);
 				glVertex2f(		col	+		snakeUnit*(1)		, 	row	+		snakeUnit*(3)		); // vertex 
@@ -440,6 +443,7 @@ void drawSnake(Snake *snake){
 			glEnd();
 			break;
 	}
+	
 	////////////////////////////////////////THIS SWITCH DRAWS THE HEAD
 	switch(snake->direction){
 		
@@ -886,7 +890,6 @@ void drawFood(Food *food){		//draw food onto field}
 	glutPostRedisplay();
 }
 
-////////////////////////////////////////////FIX UPDATE SNAKE
 void updateSnake(Snake *snake){
 	
 	Snake *tempSnake = (Snake*)malloc(sizeof(Snake));	
@@ -981,13 +984,11 @@ void buttons(unsigned char key, int x, int y){
 		case '[':
 			if (gameSpeed > 1){
 				gameSpeed -= 1;
-				resetGame();
 			}
 			break;
 		case ']':
 			if (gameSpeed < 5){
 				gameSpeed += 1;
-				resetGame();
 			}
 			break;
     }
@@ -1106,6 +1107,7 @@ void bodyHitCheck(Snake *snake){
 		
 		snake = snake->nextSeg;
 	}
+	free(head);
 }
 
 void wallHitCheck(Snake *snake){
@@ -1121,17 +1123,19 @@ void foodHitCheck(Snake *snake){
 			printf("WE'VE HIT A FOOD!\n");
 			skipDeleteSegment = TRUE;
 			
-			Snake *snake = currentSnake;
+			Snake *tempSnake = malloc(sizeof(Snake));
+			tempSnake = currentSnake;
 			
 			generateRandCoords(&x, &y);
-			while(snake != NULL){
-				if(snake->col == x && snake->row == y){
+			while(tempSnake != NULL){
+				if(tempSnake->col == x && tempSnake->row == y){
 					generateRandCoords(&x, &y);
-					*snake = *currentSnake;
+					tempSnake = currentSnake;
 				} 
-				snake=snake->nextSeg;
+				tempSnake=tempSnake->nextSeg;
 			}
 			
+			free(tempSnake);
 			
 			generateRandCoords(&x, &y);
 			currentFood->col = x;
